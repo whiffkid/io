@@ -6,8 +6,8 @@ st.set_page_config(page_title="Lab Exam Codes", layout="centered")
 st.title("📝 Lab Exam Code Reference")
 st.write("Use the tabs below to view and copy the code for your lab exam.")
 
-# Create tabs for the three codes
-tab1, tab2, tab3 = st.tabs(["1. Voltage Monitor", "2. Matrix Keypad", "3. RPi LED Control"])
+# Create tabs for the four codes
+tab1, tab2, tab3, tab4 = st.tabs(["1. Voltage Monitor", "2. Matrix Keypad", "3. RPi LED Control", "4. ESP8266 WiFi"])
 
 with tab1:
     st.header("Arduino Voltage Monitor")
@@ -126,3 +126,41 @@ finally:
   GPIO.output(LED,GPIO.LOW)
   GPIO.cleanup()"""
     st.code(rpi_code, language='python')
+
+with tab4:
+    st.header("ESP8266 WiFi Connect")
+    wifi_code = """#include <ESP8266WiFi.h>
+
+char ssid[] = "IN_Exam_Cell";
+char pass[] = "Exam@2026#";
+
+void setup()
+{
+  Serial.begin(115200);
+  delay(1000);
+  
+  Serial.println("---------------------------------");
+  Serial.println("ESP8266 Starting...");
+  Serial.println("---------------------------------");
+  
+  Serial.print("Connecting to Wi-Fi");
+  
+  WiFi.begin(ssid, pass);
+  
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println();
+  Serial.println("Wi-Fi Connected!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop()
+{
+  // Your code runs repeatedly here
+}"""
+    st.code(wifi_code, language='cpp')
