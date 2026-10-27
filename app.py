@@ -6,8 +6,14 @@ st.set_page_config(page_title="Lab Exam Codes", layout="centered")
 st.title("📝 Lab Exam Code Reference")
 st.write("Use the tabs below to view and copy the code for your lab exam.")
 
-# Create tabs for the four codes
-tab1, tab2, tab3, tab4 = st.tabs(["1. Voltage Monitor", "2. Matrix Keypad", "3. RPi LED Control", "4. ESP8266 WiFi"])
+# Create tabs for the five codes
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "1. Voltage Monitor", 
+    "2. Matrix Keypad", 
+    "3. RPi LED Control", 
+    "4. ESP8266 WiFi", 
+    "5. Pi Static IP"
+])
 
 with tab1:
     st.header("Arduino Voltage Monitor")
@@ -164,3 +170,31 @@ void loop()
   // Your code runs repeatedly here
 }"""
     st.code(wifi_code, language='cpp')
+
+with tab5:
+    st.header("Pi Static IP Configuration")
+    
+    st.markdown("""
+**Detailed Procedure – Part C: Configure a Static IP**
+
+The exact network configuration method can depend on the Raspberry Pi OS release and the network manager in use. For a setup using dhcpcd, the following method may be used if dhcpcd is installed and active.
+
+1. Open the configuration file using: `sudo nano /etc/dhcpcd.conf`
+2. Add a configuration appropriate to your local network. Example:
+    """)
+    
+    static_ip_code = """interface eth0
+static ip_address=192.168.1.50/24
+static routers=192.168.1.1
+static domain_name_servers=8.8.8.8 1.1.1.1"""
+    st.code(static_ip_code, language='bash')
+    
+    st.markdown("""
+3. Replace the example addresses with addresses suitable for the laboratory network.
+4. Save the file using **Ctrl+O**, press **Enter**, and exit using **Ctrl+X**.
+5. Restart the Raspberry Pi using: `sudo reboot`
+6. After reboot, execute `hostname -I`.
+7. Confirm that the configured address is present.
+8. Test connectivity using: `ping 8.8.8.8`
+9. If the network uses a different subnet, use the correct gateway and DNS settings provided by the lab administrator.
+    """)
