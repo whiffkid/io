@@ -6,13 +6,14 @@ st.set_page_config(page_title="Lab Exam Codes", layout="centered")
 st.title("📝 Lab Exam Code Reference")
 st.write("Use the tabs below to view and copy the code for your lab exam.")
 
-# Create tabs for the five codes
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+# Create tabs for the six codes
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "1. Voltage Monitor", 
     "2. Matrix Keypad", 
     "3. RPi LED Control", 
     "4. ESP8266 WiFi", 
-    "5. Pi Static IP"
+    "5. Pi Static IP",
+    "6. Ultrasonic"
 ])
 
 with tab1:
@@ -198,3 +199,80 @@ static domain_name_servers=8.8.8.8 1.1.1.1"""
 8. Test connectivity using: `ping 8.8.8.8`
 9. If the network uses a different subnet, use the correct gateway and DNS settings provided by the lab administrator.
     """)
+
+with tab6:
+    st.header("Arduino Ultrasonic Motion Detector")
+    ultrasonic_code = """#define TRIG_PIN 9
+#define ECHO_PIN 10
+#define LED_PIN 13
+#define BUZZER_PIN 8
+
+float distance;
+float initialDistance;
+
+float getDistance()
+{
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  distance = duration * 0.0343 / 2;
+
+  return distance;
+}
+
+void setup()
+{
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  Serial.begin(9600);
+  delay(2000);
+
+  // Store the initial position
+  initialDistance = getDistance();
+
+  Serial.print("Initial Distance: ");
+  Serial.print(initialDistance);
+  Serial.println(" cm");
+
+  digitalWrite(LED_PIN, LOW);
+  digitalWrite(BUZZER_PIN, LOW);
+}
+
+void loop()
+{
+  float currentDistance = getDistance();
+
+  Serial.print("Distance: ");
+  Serial.print(currentDistance);
+  Serial.println(" cm");
+
+  // Check whether the object has moved
+  if (abs(currentDistance - initialDistance) > 5)
+  {
+    digitalWrite(LED_PIN, HIGH);
+    digitalWrite(BUZZER_PIN, HIGH);
+
+    Serial.println("MOVEMENT DETECTED!");
+
+    delay(500);
+
+    // Update reference position
+    initialDistance = currentDistance;
+  }
+  else
+  {
+    digitalWrite(LED_PIN, LOW);
+    digitalWrite(BUZZER_PIN, LOW);
+  }
+
+  delay(200);
+}"""
+    st.code(ultrasonic_code, language='cpp')
